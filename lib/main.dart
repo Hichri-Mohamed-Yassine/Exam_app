@@ -1,8 +1,9 @@
-import 'dart:collection';
+//import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'question.dart';
+import 'app_brain.dart';
 
+AppBrain appBrain = AppBrain();
 void main() {
   runApp(const ExamApp());
 }
@@ -22,8 +23,8 @@ class ExamApp extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
+        body: const Padding(
+          padding: EdgeInsets.all(20.0),
           child: ExamPage(),
         ),
       ),
@@ -41,19 +42,19 @@ class ExamPage extends StatefulWidget {
 class _ExamPageState extends State<ExamPage> {
   List<Widget> answerResult = [];
   void checkAnswer(bool whatUserPicked) {
-    bool? correctAnswer = questionGroup[questionNumber].questionAnswer;
+    bool? correctAnswer = appBrain.getQuestionAnswer();
     setState(() {
       if (whatUserPicked == correctAnswer) {
-        answerResult.add(Padding(
-          padding: const EdgeInsets.all(3.0),
+        answerResult.add(const Padding(
+          padding: EdgeInsets.all(3.0),
           child: Icon(
             Icons.thumb_up,
             color: Colors.green,
           ),
         ));
       } else {
-        answerResult.add(Padding(
-          padding: const EdgeInsets.all(3.0),
+        answerResult.add(const Padding(
+          padding: EdgeInsets.all(3.0),
           child: Icon(
             Icons.thumb_down,
             color: Colors.red,
@@ -61,7 +62,7 @@ class _ExamPageState extends State<ExamPage> {
         ));
       }
 
-      questionNumber++;
+      appBrain.nextQuestion();
     });
   }
 
@@ -79,32 +80,7 @@ class _ExamPageState extends State<ExamPage> {
   ];
   List<bool> answers = [true, true, false, false];
   */
-  List<Question> questionGroup = [
-    Question(
-        q: "The number of planets in the solar system is eight",
-        i: "images/image-1.jpg",
-        a: true),
-    Question(q: "cats is Carnivorous", i: "images/image-2.jpg", a: true),
-    Question(
-        q: "China is located on the African continent",
-        i: "images/image-3.jpg",
-        a: false),
-    Question(
-        q: "The Earth is flat, not spherical",
-        i: "images/image-4.jpg",
-        a: false),
-    Question(
-        q: "Humans can survive without eating meat",
-        i: "images/image-5.jpg",
-        a: true),
-    Question(
-        q: "The sun revolves around the earth and the earth revolves around the moon",
-        i: "images/image-6.jpg",
-        a: false),
-    Question(q: "Animals do not feel pain", i: "images/image-7.jpg", a: false),
-  ];
 
-  int questionNumber = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -117,15 +93,15 @@ class _ExamPageState extends State<ExamPage> {
           flex: 5,
           child: Column(
             children: [
-              Image.asset(
-                  questionGroup[questionNumber].questionImage.toString()),
+              Image.asset(appBrain.getQuestionImage()),
               const SizedBox(
                 height: 20.0,
               ),
               Text(
-                questionGroup[questionNumber].questionText.toString(),
+                appBrain.getQuestionText(),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 24.0, fontWeight: FontWeight.bold),
               )
             ],
           ),
