@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'app_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 AppBrain appBrain = AppBrain();
 void main() {
@@ -41,10 +42,12 @@ class ExamPage extends StatefulWidget {
 
 class _ExamPageState extends State<ExamPage> {
   List<Widget> answerResult = [];
+  int rightAnsewers = 0;
   void checkAnswer(bool whatUserPicked) {
     bool? correctAnswer = appBrain.getQuestionAnswer();
     setState(() {
       if (whatUserPicked == correctAnswer) {
+        rightAnsewers++;
         answerResult.add(const Padding(
           padding: EdgeInsets.all(3.0),
           child: Icon(
@@ -61,8 +64,30 @@ class _ExamPageState extends State<ExamPage> {
           ),
         ));
       }
-
-      appBrain.nextQuestion();
+      if (appBrain.isFinished()) {
+        Alert(
+          context: context,
+          //type: AlertType.error,
+          title: "Test finished",
+          desc:
+              "You have answered all the questions and the result is : $rightAnsewers/7",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "start again",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
+        appBrain.reset();
+        answerResult = [];
+        rightAnsewers = 0;
+      } else {
+        appBrain.nextQuestion();
+      }
     });
   }
 
